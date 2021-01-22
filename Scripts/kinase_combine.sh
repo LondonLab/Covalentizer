@@ -1,0 +1,1 @@
+python /work/londonlab/git_dock/DOCK/analysis/extract_all.py -s 10 --done ; python ~/Work/Current/Covalentizer/scripts/getposes.py -x 0 -f extract_all.sort.txt ; python /home/danielza/CovaLib/Scripts/SeperatePoses.py poses.mol2 ; cd poses ; for i in *.mol2 ; do python ~/Work/Current/Covalentizer/scripts/substructure_align.py ../../nonelec.mol2 $i ; done > ../results2.txt ; cd ..

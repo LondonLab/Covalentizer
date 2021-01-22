@@ -1,0 +1,1 @@
+python $DOCKBASE/analysis/extract_all.py -s 10 --done ; python $SCRIPTS/Covalentizer/getposes.py -x 0 -l 0 -f extract_all.sort.txt ; python $SCRIPTS/SeperatePoses.py poses.mol2 ; cd poses ; for i in *.mol2 ; do python $SCRIPTS/Covalentizer/substructure_align.py ../../../xtal-lig.mol2 $i >> ../results.txt ; done ; cd .. ; rm -r poses/ ; $SCRIPTS/Covalentizer/finalize_smiles.sh
