@@ -4,9 +4,8 @@ from subprocess import Popen, PIPE
 import sys
 import os
 import shutil
-sys.path.append(os.environ["COVALIB"])
+sys.path.append(os.environ["COVALENTIZER"])
 from Code import *
-from Code.Covalentizer import *
 
 def main(name, argv):
         if len(argv) != 2:
@@ -14,7 +13,7 @@ def main(name, argv):
                 return
 
         cluster = Cluster.Cluster()
-        cluster.runSingle("python /home/covalentizer/CovaLib/Scripts/Covalentizer/AutoProcess/process_pdb_multiple_lig.py " + argv[0] + " " + argv[1])
+        cluster.runSingle("python " + os.environ["COVALENTIZER"] + "/Scripts/AutoProcess/process_pdb_multiple_lig.py " + argv[0] + " " + argv[1])
 
 def print_usage(name):
         print "Usage : " + name + " <pdb_file> <lig_file>"

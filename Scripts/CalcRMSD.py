@@ -1,7 +1,7 @@
 import subprocess
 import sys
 import os
-sys.path.append(os.environ["COVALIB"])
+sys.path.append(os.environ["COVALENTIZER"])
 from Code import *
 
 def main(name, argv):

@@ -1,8 +1,8 @@
 import shutil
 import os
 import sys
-sys.path.append(os.environ["COVALIB"])
-from Code import *
+import PYMOLUtils
+import ChemUtils
 
 def cysteine_folders(pdb_file):
     with open('res.txt', 'r') as f:

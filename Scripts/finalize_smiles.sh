@@ -6,7 +6,7 @@ for i in `grep '.' results.txt | awk '$NF < 1.5' | awk -F '.' '{print $1}'` ; do
 for name in `cat names.list ` ; do pwd | awk -F 'CYS' '{print $NF}' | awk -v "var=${name}" -F '/' '{print "cat ../../../../Ligands/" $2 "/lib.smi | awk '\''$2==\""var"\"'\'' | awk '\''{print $1}'\''"}' ; done > tmp.sh ; chmod 777 tmp.sh ; ./tmp.sh > smiles.list
 rm tmp.sh
 paste smiles.list names.list rmsd.list index.list | sort -k3,3 -n | awk '!x[$1]++' | cat -n > data.txt
-python $SCRIPTS/ExtractPoses.py poses.mol2 index.list
+python $COVALENTIZER/Scripts/ExtractPoses.py poses.mol2 index.list
 for i in `wc -l data.txt | awk '$1 > 0' | awk '{print $1}'` ; do mkdir web_files/ ; done
 cat data.txt | awk '{print "cp poses/"$5".mol2 web_files/"$1".mol2 ; echo \""$2"\" > web_files/"$1".smi ; echo "$4" > web_files/"$1".rmsd"}' > make_web_folder.sh ; chmod 777 make_web_folder.sh ; ./make_web_folder.sh
 if [ -d "web_files/" ]; then
@@ -15,6 +15,6 @@ if [ -d "web_files/" ]; then
     head -1 ../../../res.txt | awk '{print $2}' > web_files/cys_position.txt
     head -1 ../../../res.txt | awk '{print $3}' > web_files/chain.txt
     cd web_files/
-    for i in *.smi ; do python $SCRIPTS/Covalentizer/reform_elec.py $SCRIPTS/Covalentizer/reform_elec.re $i tmp.smi ; cat tmp.smi | awk '{print $1}' > $i ; python $SCRIPTS/Covalentizer/draw_smile.py $i ; done ; rm tmp.smi
+    for i in *.smi ; do python $COVALENTIZER/Scripts/reform_elec.py $COVALENTIZER/Scripts/reform_elec.re $i tmp.smi ; cat tmp.smi | awk '{print $1}' > $i ; python $COVALENTIZER/Scripts/draw_smile.py $i ; done ; rm tmp.smi
     cd ../
 fi

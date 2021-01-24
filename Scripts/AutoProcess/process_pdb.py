@@ -4,16 +4,15 @@ from subprocess import Popen, PIPE
 import sys
 import os
 import shutil
-sys.path.append(os.environ["COVALIB"])
+sys.path.append(os.environ["COVALENTIZER"])
 from Code import *
-from Code.Covalentizer import *
 
 def main(name, argv):
         if len(argv) != 2:
                 print_usage(name)
                 return
 
-        f = open('log.txt', 'w')
+        f = open('log.txt', 'w', 0)
         f.write('Covalentizer has started.\n')
 
         curr_dir = os.getcwd()
@@ -22,9 +21,9 @@ def main(name, argv):
                 lig_f.write(argv[1] + '\n')
         f.write('Looking for cysteine\'s tiol within 6A of any of the ligand atoms.\n')
         res = PYMOLUtils.env_cysteine(argv[0], 'lig.name')
-        with open('res.txt', 'w') as f:
+        with open('res.txt', 'w') as fres:
                 for r in res:
-                        f.write("\t".join(r) + '\n')
+                        fres.write("\t".join(r) + '\n')
         if len(res) == 0:
                 f.write('Did not find cysteines which are close to the ligand.\n')
                 f.close()
@@ -52,7 +51,7 @@ def main(name, argv):
         for lig in ligands:
                 os.chdir(lig)
                 CovUtils.build_library('smile.smi', 'frags.smi', 'lib.smi')
-                p = Popen([os.environ["DOCKBASE"] + '/ligand/generate/fixed/build_covalent_lib.csh', 'lib.smi', '10', 'LIB'], stdin=PIPE, stdout=PIPE, stderr=PIPE)
+                p = Popen([os.environ["DOCKBASE"] + '/ligand/generate/build_covalent_lib.csh', 'lib.smi', '10', 'LIB'], stdin=PIPE, stdout=PIPE, stderr=PIPE)
                 lig_jobs = [line for line in p.communicate()[0].split('\n') if 'pbs' in line]
                 os.chdir('../')
         os.chdir('../')
@@ -62,12 +61,12 @@ def main(name, argv):
                 lig = d.split('/')[1]
                 os.chdir(d)
                 DOCK_Prepare.DOCK_Prepare.changeNumSave(10)
-                p = Popen(['python', os.environ["SCRIPTS"] + '/DOCKovalentTask.py', 'CovLib', ligands[lig], 'True'], stdin=PIPE, stdout=PIPE, stderr=PIPE)
+                p = Popen(['python', os.environ["COVALENTIZER"] + 'Scripts/DOCKovalentTask.py', 'CovLib', ligands[lig], 'True'], stdin=PIPE, stdout=PIPE, stderr=PIPE)
                 dock_jobs += [line for line in p.communicate()[0].split('\n') if 'pbs' in line]
                 os.chdir(curr_dir)
         Cluster.Cluster.wait(dock_jobs)
         f.close()
-        os.system(os.environ["SCRIPTS"] + '/Covalentizer/Final_Scripts/combine.sh')
+        os.system(os.environ["COVALENTIZER"] + 'Scripts/Final_Scripts/combine.sh')
         os.mkdir('Results')
         for d in dirlist:
                 web_folder = d + '/CovLib/web_files/'

@@ -4,9 +4,8 @@ from subprocess import Popen, PIPE
 import sys
 import os
 import shutil
-sys.path.append(os.environ["COVALIB"])
+sys.path.append(os.environ["COVALENTIZER"])
 from Code import *
-from Code.Covalentizer import *
 
 def main(name, argv):
         if len(argv) != 2:
@@ -75,12 +74,12 @@ def main(name, argv):
         os.chdir('Ligands')
         for lig in ligands:
                 os.chdir(lig)
-                CovUtils.build_library('smile.smi', 'frags.smi', 'lib.smi', rules = os.environ["COVALIB"] + "/Code/Covalentizer/di_amine_rules.re", linker_lib = True, linker_smiles = os.environ["COVALIB"] + "/Code/Covalentizer/di_amine_linkers.smi")
+                CovUtils.build_library('smile.smi', 'frags.smi', 'lib.smi', rules = os.environ["COVALENTIZER"] + "/Code/di_amine_rules.re", linker_lib = True, linker_smiles = os.environ["COVALENTIZER"] + "/Code/di_amine_linkers.smi")
                 if os.stat('frags.smi').st_size == 0 or os.stat('smile.smi').st_size == 0 or os.stat('lib.smi').st_size == 0:
                         ligands_to_remove.append(lig)
                         os.chdir('../')
                         continue
-                p = Popen([os.environ["DOCKBASE"] + '/ligand/generate/fixed/build_covalent_lib_medium.csh', 'lib.smi', '10', 'LIB'], stdin=PIPE, stdout=PIPE, stderr=PIPE)
+                p = Popen([os.environ["DOCKBASE"] + '/ligand/generate/build_covalent_lib_medium.csh', 'lib.smi', '10', 'LIB'], stdin=PIPE, stdout=PIPE, stderr=PIPE)
                 lig_jobs += [line for line in p.communicate()[0].split('\n') if 'pbs' in line]
                 os.chdir('../')
         os.chdir('../')

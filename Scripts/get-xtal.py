@@ -1,5 +1,5 @@
 import sys,os,math
-sys.path.append(os.environ["COVALIB"])
+sys.path.append(os.environ["COVALENTIZER"])
 from Code import *
 
 def main(name, argv):

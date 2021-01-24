@@ -89,7 +89,7 @@ def multi_linkers(argv, linker_smiles):
             uniq_smiles.append(m[0])
     f.close()
 
-def build_library(in_smile, frags, lib, rules = os.environ["COVALIB"] + "/Code/Covalentizer/numbered_reaction.re", linker_lib = False, linker_smiles = ''):
+def build_library(in_smile, frags, lib, rules = os.environ["COVALENTIZER"] + "/Code/numbered_reaction.re", linker_lib = False, linker_smiles = ''):
     argv = [in_smile, frags, lib]
     with open(argv[0], 'r') as f:
         smile = f.readline().split()[0]

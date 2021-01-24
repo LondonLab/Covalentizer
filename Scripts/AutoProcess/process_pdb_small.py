@@ -4,9 +4,8 @@ from subprocess import Popen, PIPE
 import sys
 import os
 import shutil
-sys.path.append(os.environ["COVALIB"])
+sys.path.append(os.environ["COVALENTIZER"])
 from Code import *
-from Code.Covalentizer import *
 
 def main(name, argv):
         if len(argv) != 2:
@@ -75,12 +74,12 @@ def main(name, argv):
         os.chdir('Ligands')
         for lig in ligands:
                 os.chdir(lig)
-                CovUtils.build_library('smile.smi', 'frags.smi', 'lib.smi', rules = os.environ["COVALIB"] + "/Code/Covalentizer/acrylamide.re")
+                CovUtils.build_library('smile.smi', 'frags.smi', 'lib.smi', rules = os.environ["COVALENTIZER"] + "/Code/numbered_reaction.re")
                 if os.stat('frags.smi').st_size == 0 or os.stat('smile.smi').st_size == 0 or os.stat('lib.smi').st_size == 0:
                         ligands_to_remove.append(lig)
                         os.chdir('../')
                         continue
-                p = Popen([os.environ["DOCKBASE"] + '/ligand/generate/fixed/build_covalent_lib_medium.csh', 'lib.smi', '10', 'LIB'], stdin=PIPE, stdout=PIPE, stderr=PIPE)
+                p = Popen([os.environ["DOCKBASE"] + '/ligand/generate/build_covalent_lib_medium.csh', 'lib.smi', '10', 'LIB'], stdin=PIPE, stdout=PIPE, stderr=PIPE)
                 lig_jobs += [line for line in p.communicate()[0].split('\n') if 'pbs' in line]
                 os.chdir('../')
         os.chdir('../')
@@ -124,7 +123,7 @@ def main(name, argv):
                 lig = d.split('/')[1]
                 os.chdir(d)
                 DOCK_Prepare.DOCK_Prepare.changeNumSave(10)
-                p = Popen(['python', os.environ["SCRIPTS"] + '/DOCKovalentTask.py', 'CovLib', ligands[lig], 'True'], stdin=PIPE, stdout=PIPE, stderr=PIPE)
+                p = Popen(['python', os.environ["COVALENTIZER"] + 'Scripts/DOCKovalentTask.py', 'CovLib', ligands[lig], 'True'], stdin=PIPE, stdout=PIPE, stderr=PIPE)
                 dock_jobs += [line for line in p.communicate()[0].split('\n') if 'pbs' in line]
                 os.chdir(curr_dir)
         f.write('INFO: Job IDs for covalent docking: ' + str(dock_jobs) + '\n')
@@ -142,7 +141,7 @@ def main(name, argv):
         with open('reslist', 'w') as dirf:
                 for line in reslist:
                         dirf.write(line + '\n')
-        results_jobs = cluster.runBatchJobs('reslist', os.environ["SCRIPTS"] + '/Covalentizer/Final_Scripts/combine_cluster.sh', mem='32000mb')
+        results_jobs = cluster.runBatchJobs('reslist', os.environ["COVALENTIZER"] + 'Scripts/Final_Scripts/combine_cluster.sh', mem='32000mb')
         f.write('INFO: Job IDs for analyzing the results: ' + str(results_jobs) + '\n')
         waiting_done = Cluster.Cluster.wait(results_jobs, timeout)
         if waiting_done:
