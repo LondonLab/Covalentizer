@@ -20,7 +20,7 @@ conda install -c schrodinger pymol
 
 5. Install DOCK and DOCKovalent, as well as all of their requirements (http://wiki.docking.org/index.php/Main_Page)
 
-6. Set the following environment parameters: export OB=”/Path_to_OpenBabel/”, export COVALENTIZER=”/Path_to_the_git_folder/”, export PBS_HOME=”/Path_to_PBS_bin_folder/”, export DOCKBASE="/Path_to_DOCK_git/"
+6. Set the following environment parameters: export COVALENTIZER=”/Path_to_the_git_folder/”, export PBS_HOME=”/Path_to_PBS_bin_folder/”, export DOCKBASE="/Path_to_DOCK_git/"
 
 Usage:
 
